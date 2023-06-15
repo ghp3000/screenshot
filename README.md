@@ -1,75 +1,71 @@
 screenshot
 ==========
 
-![](https://github.com/kbinani/screenshot/actions/workflows/go.yml/badge.svg)
-[![](https://img.shields.io/badge/godoc-reference-5272B4.svg)](https://godoc.org/github.com/kbinani/screenshot)
-[![](https://img.shields.io/badge/license-MIT-428F7E.svg?style=flat)](https://github.com/kbinani/screenshot/blob/master/LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/kbinani/screenshot)](https://goreportcard.com/report/github.com/kbinani/screenshot)
-
-* Go library to capture desktop screen.
-* Support Windows, Mac, Linux, FreeBSD, OpenBSD, NetBSD, and Solaris environment.
-* Multiple display supported.
-* `cgo` free for Windows, Linux, FreeBSD, OpenBSD, NetBSD, and Solaris.
+* 使用go 语言在win上截屏，可自动选择gdi和dxgi模式，也可以手动选择
+* 可设置是否绘制鼠标指针
+* 支持多显示器
+* 使用SIMD做BGRA转RGBA，提升效率
+* 分辨率不变化的情况不释放内存，以优化gdi的截图时间
+* 这是为后面要实施的远程控制和投屏软件准备的基础库
 
 example
 =======
 
 * sample program `main.go`
 
-	```go
-	package main
-
-	import (
-		"github.com/kbinani/screenshot"
-		"image/png"
-		"os"
-		"fmt"
-	)
-
-	func main() {
-		n := screenshot.NumActiveDisplays()
-
-		for i := 0; i < n; i++ {
-			bounds := screenshot.GetDisplayBounds(i)
-
-			img, err := screenshot.CaptureRect(bounds)
-			if err != nil {
-				panic(err)
-			}
-			fileName := fmt.Sprintf("%d_%dx%d.png", i, bounds.Dx(), bounds.Dy())
-			file, _ := os.Create(fileName)
-			defer file.Close()
-			png.Encode(file, img)
-
-			fmt.Printf("#%d : %v \"%s\"\n", i, bounds, fileName)
-		}
-	}
-	```
-
-* output example
-	
-	```bash
-	$ go run main.go
-	#0 : (0,0)-(1280,800) "0_1280x800.png"
-	#1 : (-293,-1440)-(2267,0) "1_2560x1440.png"
-	#2 : (-1373,-1812)-(-293,108) "2_1080x1920.png"
-	$ ls -1
-	0_1280x800.png
-	1_2560x1440.png
-	2_1080x1920.png
-	main.go
-	```
-
-coordinate
-=================
-Y-axis is downward direction in this library. The origin of coordinate is upper-left corner of main display. This means coordinate system is similar to Windows OS
-
-license
-=======
-
-MIT Licence
-
-author
-======
-
-kbinani
+  ```go
+  package main
+  
+  import (
+  "fmt"
+  "image"
+  "image/png"
+  "os"
+  "runtime"
+  "screenshot"
+  "strconv"
+  "time"
+  )
+  
+  // save *image.RGBA to filePath with PNG format.
+  func save(img *image.RGBA, filePath string) {
+      file, err := os.Create(filePath)
+      if err != nil {
+      panic(err)
+      }
+      defer file.Close()
+      png.Encode(file, img)
+  }
+  func main() {
+      runtime.LockOSThread()
+      var err error
+      shot := screenshot.NewScreenShot(1)
+      if err != nil {
+          fmt.Println(err)
+      return
+      }
+  shot.DrawCursor(1)
+  fmt.Println(shot.GetCaptureName())
+  err = shot.Init(0)
+  if err != nil {
+      fmt.Println(err)
+  return
+  }
+  defer shot.Release()
+  start := time.Now()
+  for i := 0; i < 10; i++ {
+      start = time.Now()
+      img, err := shot.Capture()
+      //_, err := screenshot.Capture(0, 0, 1920, 1080)
+      if err != nil {
+          fmt.Println(err)
+          //return
+      } else {
+      fmt.Println(time.Since(start))
+      save(img, strconv.FormatInt(time.Now().UnixNano(), 10)+".png")
+      }
+      //time.Sleep(time.Millisecond * 30)
+  }
+      fmt.Println(time.Since(start))
+  }
+  ```
