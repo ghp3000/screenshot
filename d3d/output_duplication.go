@@ -3,8 +3,8 @@ package d3d
 import (
 	"errors"
 	"fmt"
+	"github.com/ghp3000/screenshot/swizzle"
 	"image"
-	"screenshot/swizzle"
 	"unsafe"
 )
 

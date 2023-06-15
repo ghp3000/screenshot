@@ -3,11 +3,11 @@ package screenshot
 import (
 	"errors"
 	"fmt"
+	"github.com/ghp3000/screenshot/internal/util"
+	"github.com/ghp3000/screenshot/swizzle"
 	"github.com/lxn/win"
 	"image"
 	"reflect"
-	"screenshot/internal/util"
-	"screenshot/swizzle"
 	"sync/atomic"
 	"syscall"
 	"unsafe"

@@ -1,4 +1,4 @@
-module screenshot
+module github.com/ghp3000/screenshot
 
 go 1.19
 

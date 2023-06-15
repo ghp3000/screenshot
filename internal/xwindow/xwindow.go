@@ -9,11 +9,11 @@ import (
 	"image/color"
 
 	"github.com/gen2brain/shm"
+	"github.com/ghp3000/screenshot/internal/util"
 	"github.com/jezek/xgb"
 	mshm "github.com/jezek/xgb/shm"
 	"github.com/jezek/xgb/xinerama"
 	"github.com/jezek/xgb/xproto"
-	"screenshot/internal/util"
 )
 
 func Capture(x, y, width, height int) (img *image.RGBA, e error) {

@@ -2,8 +2,8 @@ package screenshot
 
 import (
 	"fmt"
+	"github.com/ghp3000/screenshot/d3d"
 	"image"
-	"screenshot/d3d"
 	"sync/atomic"
 )
 

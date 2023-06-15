@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/ghp3000/screenshot"
 	"image"
 	"image/png"
 	"os"
 	"runtime"
-	"screenshot"
 	"strconv"
 	"time"
 )
