@@ -1,3 +1,4 @@
+//go:build darwin && !go1.10
 // +build darwin,!go1.10
 
 package screenshot
@@ -11,7 +12,7 @@ import (
 	"image"
 	"unsafe"
 
-	"github.com/kbinani/screenshot/internal/util"
+	"github.com/ghp3000/screenshot/internal/util"
 )
 
 func Capture(x, y, width, height int) (*image.RGBA, error) {
